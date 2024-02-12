@@ -1,0 +1,106 @@
+databaseChangeLog:
+  -  changeSet:
+       id:  1
+       author:  rakalus
+       changes:
+         - createTable:
+             tableName: rooms
+             columns:
+               - column:
+                   name: id
+                   type: int
+                   autoIncrement: true
+                   constraints:
+                     primaryKey: true
+                     nullable: false
+
+
+
+               - column:
+                   name: floor
+                   type: int
+                   constraints:
+                     nullable: false
+
+               - column:
+                   name: number
+                   type: int
+                   constraints:
+                     nullable: false
+
+               - column:
+                  name: type
+                  type: text
+                  constraints:
+                    nullable: false
+
+               - column:
+                   name: comfort
+                   type: text
+                   constraints:
+                     nullable: false
+
+               - column:
+                   name: beds
+                   type: int
+                   constraints:
+                     nullable: false
+
+               - column:
+                   name: created
+                   type: date
+                   constraints:
+                     nullable: false
+
+               - column:
+                   name: edited
+                   type: date
+                   constraints:
+                     nullable: false
+
+         - createTable:
+             tableName: guests
+             columns:
+               - column:
+                   name: id
+                   type: int
+                   autoIncrement: true
+                   constraints:
+                     primaryKey: true
+                     nullable: false
+
+               - column:
+                   name: room
+                   type: int
+                   constraints:
+                     nullable: false
+                     foreignKeyName: guests_room_rooms_id
+                     references: rooms(id)
+
+               - column:
+                   name: surname
+                   type: text
+                   constraints:
+                     nullable: false
+
+               - column:
+                   name: name
+                   type: text
+                   constraints:
+                     nullable: false
+
+               - column:
+                   name: patronymic
+                   type: text
+
+               - column:
+                   name: created
+                   type: date
+                   constraints:
+                     nullable: false
+
+               - column:
+                   name: edited
+                   type: date
+                   constraints:
+                     nullable: false
