@@ -1,6 +1,11 @@
 package ru.rakalus.test.model;
 
+import io.hypersistence.utils.hibernate.type.basic.PostgreSQLCITextType;
+
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+
 
 import java.sql.Date;
 
@@ -19,10 +24,12 @@ public class Room {
     private Integer number;
 
     @Column(name = "type")
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private Sex type;
 
     @Column(name = "comfort")
-    private String comfort;
+    @Enumerated(EnumType.STRING)
+    private Comfort comfort;
 
     @Column(name = "beds")
     private Integer beds;
@@ -57,19 +64,20 @@ public class Room {
         this.number = number;
     }
 
-    public String getType() {
+    public Sex getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Sex type) {
         this.type = type;
     }
 
-    public String getComfort() {
+    public Comfort getComfort() {
         return comfort;
     }
 
-    public void setComfort(String comfort) {
+    public void setComfort(Comfort comfort) {
+
         this.comfort = comfort;
     }
 
