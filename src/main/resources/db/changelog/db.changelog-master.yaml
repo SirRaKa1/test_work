@@ -8,8 +8,7 @@ databaseChangeLog:
              columns:
                - column:
                    name: id
-                   type: int
-                   autoIncrement: true
+                   type: serial
                    constraints:
                      primaryKey: true
                      nullable: false
@@ -61,8 +60,7 @@ databaseChangeLog:
              columns:
                - column:
                    name: id
-                   type: int
-                   autoIncrement: true
+                   type: serial
                    constraints:
                      primaryKey: true
                      nullable: false
@@ -108,3 +106,19 @@ databaseChangeLog:
                    type: date
                    constraints:
                      nullable: false
+
+
+
+
+  - changeSet:
+      id: 2
+      author: rakalus
+      changes:
+
+        - renameSequence:
+            oldSequenceName: guests_id_seq
+            newSequenceName: guests_seq
+
+        - renameSequence:
+            oldSequenceName: rooms_id_seq
+            newSequenceName: rooms_seq
