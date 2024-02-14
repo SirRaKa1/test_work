@@ -8,6 +8,7 @@ import ru.rakalus.test.repository.RoomRepository;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -24,9 +25,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> readAll(Room room) {
-        if (room != null) return repository.findAll(Example.of(room));
-        else return repository.findAll();
+    public List<Room> readAll(Room room, String empty) {
+        List<Room> temp;
+        if (room != null) temp = repository.findAll(Example.of(room));
+        else temp = repository.findAll();
+        if (Objects.equals(empty, "true"))
+            temp.removeIf(room1 -> room1.getBeds() <= room1.guests.size());
+        return temp;
     }
 
     @Override

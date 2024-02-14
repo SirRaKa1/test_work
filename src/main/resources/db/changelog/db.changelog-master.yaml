@@ -3,23 +3,6 @@ databaseChangeLog:
        id:  1
        author:  rakalus
        changes:
-         - sql:
-             dbms: 'postgresql'
-             sql: create type sex as enum('male','female')
-
-         - sql:
-             dbms: 'postgresql'
-             sql: create type comfort as enum('standard','high_comfort','luxury')
-
-         - sql:
-             dbms: 'postgresql'
-             sql: CREATE CAST (varchar AS sex) WITH INOUT AS IMPLICIT
-
-         - sql:
-             dbms: 'postgresql'
-             sql: CREATE CAST (varchar AS comfort) WITH INOUT AS IMPLICIT
-
-
          - createTable:
              tableName: rooms
              columns:
@@ -44,13 +27,13 @@ databaseChangeLog:
 
                - column:
                   name: type
-                  type: sex
+                  type: smallint
                   constraints:
                     nullable: false
 
                - column:
                    name: comfort
-                   type: comfort
+                   type: smallint
                    constraints:
                      nullable: false
 
@@ -108,7 +91,7 @@ databaseChangeLog:
 
                - column:
                   name: sex
-                  type: sex
+                  type: smallint
                   constraints:
                     nullable: false
 
@@ -123,8 +106,6 @@ databaseChangeLog:
                    type: date
                    constraints:
                      nullable: false
-
-
 
 
   - changeSet:

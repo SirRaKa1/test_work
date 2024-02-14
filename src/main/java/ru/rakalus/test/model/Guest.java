@@ -1,5 +1,7 @@
 package ru.rakalus.test.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.sql.Date;
@@ -12,8 +14,9 @@ public class Guest {
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "room")
-    private Integer room;
+    @ManyToOne
+    @JoinColumn(name = "room")
+    private Room room;
 
     @Column(name = "surname")
     private String surname;
@@ -25,7 +28,7 @@ public class Guest {
     private String patronymic;
 
     @Column(name = "sex")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Sex sex;
 
     @Column(name = "created")
@@ -43,11 +46,11 @@ public class Guest {
         this.id = id;
     }
 
-    public Integer getRoom() {
+    public Room getRoom() {
         return room;
     }
 
-    public void setRoom(Integer room) {
+    public void setRoom(Room room) {
         this.room = room;
     }
 

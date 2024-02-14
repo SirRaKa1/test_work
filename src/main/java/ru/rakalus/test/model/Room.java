@@ -1,5 +1,8 @@
 package ru.rakalus.test.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLCITextType;
 
 import jakarta.persistence.*;
@@ -8,6 +11,7 @@ import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "rooms")
@@ -24,11 +28,11 @@ public class Room {
     private Integer number;
 
     @Column(name = "type")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Sex type;
 
     @Column(name = "comfort")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Comfort comfort;
 
     @Column(name = "beds")
@@ -39,6 +43,10 @@ public class Room {
 
     @Column(name = "edited")
     private Date edited;
+
+    @OneToMany(mappedBy = "room")
+    @JsonIgnore
+    public Set<Guest> guests;
 
     public Integer getId() {
         return id;

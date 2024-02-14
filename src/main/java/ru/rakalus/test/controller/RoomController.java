@@ -30,8 +30,8 @@ public class RoomController {
     }
 
     @GetMapping(value = "/rooms")
-    public ResponseEntity<List<Room>> read(@RequestBody(required = false) Room room) {
-        final List<Room> rooms = roomService.readAll(room);
+    public ResponseEntity<List<Room>> read(@RequestBody(required = false) Room room,@RequestParam(value = "empty", defaultValue = "false")String empty) {
+        final List<Room> rooms = roomService.readAll(room,empty);
 
         return rooms != null && !rooms.isEmpty()
                 ? new ResponseEntity<>(rooms, HttpStatus.OK)
@@ -53,20 +53,27 @@ public class RoomController {
     @PutMapping(value = "/rooms/{id}")
     public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody Room room) {
         try {
+            if(!roomService.read(id).guests.isEmpty())
+                return new ResponseEntity<>("You can't modify room when there are guests",HttpStatus.BAD_REQUEST);
             roomService.update(room, id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     }
 
     @DeleteMapping(value = "/rooms/{id}")
     public ResponseEntity<?> delete(@PathVariable(name = "id") int id) {
-        final boolean deleted = roomService.delete(id);
 
-        return deleted
-                ? new ResponseEntity<>(HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        try {
+            if (!roomService.read(id).guests.isEmpty())
+                return new ResponseEntity<>("You can't delete room when there are guests", HttpStatus.BAD_REQUEST);
+            roomService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

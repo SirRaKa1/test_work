@@ -7,7 +7,7 @@ import java.util.List;
 public interface RoomService {
     void create(Room room);
 
-    List<Room> readAll(Room room);
+    List<Room> readAll(Room room, String empty);
 
     Room read(int id);
 
