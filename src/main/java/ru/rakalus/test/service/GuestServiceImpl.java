@@ -21,8 +21,9 @@ public class GuestServiceImpl implements GuestService {
 
 
     @Override
-    public void create(Guest guest) {
-        repository.save(guest);
+    public Guest create(Guest guest) {
+        guest = repository.save(guest);
+        return repository.findById(guest.getId()).orElseThrow(RuntimeException::new);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class GuestServiceImpl implements GuestService {
     }
 
     @Override
-    public void update(Guest guest, int id) {
+    public Guest update(Guest guest, int id) {
         Guest temp = repository.findById(id).orElseThrow(RuntimeException::new);
         if (guest.getRoom() != null) {
             temp.setRoom(guest.getRoom());
@@ -55,7 +56,7 @@ public class GuestServiceImpl implements GuestService {
             temp.setSex(guest.getSex());
         }
         temp.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
-        repository.save(temp);
+        return repository.save(temp);
     }
 
     @Override

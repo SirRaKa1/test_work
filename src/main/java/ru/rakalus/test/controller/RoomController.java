@@ -25,8 +25,8 @@ public class RoomController {
     public ResponseEntity<?> create(@RequestBody Room room) {
         room.setCreated(new Date(Calendar.getInstance().getTime().getTime()));
         room.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
-        roomService.create(room);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+
+        return new ResponseEntity<>(roomService.create(room),HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/rooms")
@@ -55,8 +55,7 @@ public class RoomController {
         try {
             if(!roomService.read(id).guests.isEmpty())
                 return new ResponseEntity<>("You can't modify room when there are guests",HttpStatus.BAD_REQUEST);
-            roomService.update(room, id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(roomService.update(room, id),HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

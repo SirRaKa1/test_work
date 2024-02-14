@@ -32,8 +32,7 @@ public class GuestController {
             if ((room.getBeds() > room.guests.size()) && (room.getType() == guest.getSex())) {
                 guest.setCreated(new Date(Calendar.getInstance().getTime().getTime()));
                 guest.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
-                guestService.create(guest);
-                return new ResponseEntity<>(HttpStatus.CREATED);
+                return new ResponseEntity<>(guestService.create(guest),HttpStatus.CREATED);
             } else {
                 String s;
                 if (room.getBeds() <= room.guests.size()) s = "The room " + room.getNumber() + " is full";
@@ -81,8 +80,8 @@ public class GuestController {
             } else guest.setRoom(null);
 
 
-            guestService.update(guest, id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            guest = guestService.update(guest, id);
+            return new ResponseEntity<>(guest, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

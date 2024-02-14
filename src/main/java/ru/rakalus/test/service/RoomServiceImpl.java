@@ -20,8 +20,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void create(Room room) {
-        repository.save(room);
+    public Room create(Room room) {
+        return repository.save(room);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void update(Room room, int id) {
+    public Room update(Room room, int id) {
         Room temp = repository.findById(id).orElseThrow(RuntimeException::new);
         if (room.getBeds() != null) {
             temp.setBeds(room.getBeds());
@@ -58,7 +58,8 @@ public class RoomServiceImpl implements RoomService {
             temp.setFloor(room.getFloor());
         }
         temp.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
-        repository.save(temp);
+        return  repository.save(temp);
+
     }
 
     @Override

@@ -1,14 +1,7 @@
 package ru.rakalus.test.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import io.hypersistence.utils.hibernate.type.basic.PostgreSQLCITextType;
-
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
-
 
 import java.sql.Date;
 import java.util.Set;
