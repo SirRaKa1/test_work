@@ -34,6 +34,9 @@ public class GuestController {
             if (guest.getRoom().getId() != null) {
                 Room room = roomService.read(guest.getRoom().getId());
                 if ((room.getBeds() > room.getGuests().size()) && (room.getType() == guest.getSex())) {
+                    Room room1 = new Room();
+                    room1.setId(room.getId());
+                    guest.setRoom(room1);
                     guest.setCreated(new Date(Calendar.getInstance().getTime().getTime()));
                     guest.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
                     return new ResponseEntity<>(guestService.create(guest),HttpStatus.CREATED);
