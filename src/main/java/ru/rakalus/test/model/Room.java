@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -11,7 +12,8 @@ import java.util.Set;
 public class Room {
     @Id
     @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rooms_seq")
+    @SequenceGenerator(name = "rooms_seq",sequenceName = "rooms_seq", allocationSize = 1)
     private Integer id;
 
     @Column(name = "floor")
@@ -39,7 +41,23 @@ public class Room {
 
     @OneToMany(mappedBy = "room")
     @JsonIgnore
-    public Set<Guest> guests;
+    private Set<Guest> guests;
+
+    public Room() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return Objects.equals(id, room.id) && Objects.equals(floor, room.floor) && Objects.equals(number, room.number) && type == room.type && comfort == room.comfort && Objects.equals(beds, room.beds) && Objects.equals(created, room.created) && Objects.equals(edited, room.edited);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, floor, number, type, comfort, beds, created, edited);
+    }
 
     public Integer getId() {
         return id;
@@ -104,5 +122,13 @@ public class Room {
 
     public void setEdited(Date edited) {
         this.edited = edited;
+    }
+
+    public Set<Guest> getGuests() {
+        return guests;
+    }
+
+    public void setGuests(Set<Guest> guests) {
+        this.guests = guests;
     }
 }

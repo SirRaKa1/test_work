@@ -27,20 +27,25 @@ public class GuestController {
 
     @PostMapping(value = "/guests")
     public ResponseEntity<?> create(@RequestBody Guest guest) {
-        if (guest.getRoom().getId() != null) {
-            Room room = roomService.read(guest.getRoom().getId());
-            if ((room.getBeds() > room.guests.size()) && (room.getType() == guest.getSex())) {
-                guest.setCreated(new Date(Calendar.getInstance().getTime().getTime()));
-                guest.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
-                return new ResponseEntity<>(guestService.create(guest),HttpStatus.CREATED);
-            } else {
-                String s;
-                if (room.getBeds() <= room.guests.size()) s = "The room " + room.getNumber() + " is full";
-                else s = "The room " + room.getNumber() + " has incompatible type with new guest's sex";
-                return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
-            }
-        } else
-            return new ResponseEntity<>("Guest must have room id", HttpStatus.BAD_REQUEST);
+        try {
+            if (guest.getRoom().getId() != null) {
+                Room room = roomService.read(guest.getRoom().getId());
+                if ((room.getBeds() > room.getGuests().size()) && (room.getType() == guest.getSex())) {
+                    guest.setCreated(new Date(Calendar.getInstance().getTime().getTime()));
+                    guest.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
+                    return new ResponseEntity<>(guestService.create(guest),HttpStatus.CREATED);
+                } else {
+                    String s;
+                    if (room.getBeds() <= room.getGuests().size()) s = "The room " + room.getNumber() + " is full";
+                    else s = "The room " + room.getNumber() + " has incompatible type with new guest's sex";
+                    return new ResponseEntity<>(s, HttpStatus.BAD_REQUEST);
+                }
+            } else
+                return new ResponseEntity<>("Guest must have room id", HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>("Guest must have valid room id", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/guests")
@@ -69,8 +74,7 @@ public class GuestController {
         try {
             if ((guest.getRoom() != null) && (guest.getRoom().getId() != null)) {
                 Room room = roomService.read(guest.getRoom().getId());
-
-                if (room.getBeds() <= room.guests.size())
+                if (room.getBeds() <= room.getGuests().size())
                     return new ResponseEntity<>("The room " + room.getNumber() + " is full", HttpStatus.BAD_REQUEST);
                 if ((guest.getSex() != null) && (room.getType() != guest.getSex()))
                     return new ResponseEntity<>("The room " + room.getNumber() + " has incompatible type with the guest's new sex", HttpStatus.BAD_REQUEST);

@@ -30,7 +30,7 @@ public class RoomServiceImpl implements RoomService {
         if (room != null) temp = repository.findAll(Example.of(room));
         else temp = repository.findAll();
         if (Objects.equals(empty, "true"))
-            temp.removeIf(room1 -> room1.getBeds() <= room1.guests.size());
+            temp.removeIf(room1 -> room1.getBeds() <= room1.getGuests().size());
         return temp;
     }
 

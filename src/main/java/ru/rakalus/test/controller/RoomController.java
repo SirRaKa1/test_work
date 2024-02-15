@@ -53,7 +53,7 @@ public class RoomController {
     @PutMapping(value = "/rooms/{id}")
     public ResponseEntity<?> update(@PathVariable(name = "id") int id, @RequestBody Room room) {
         try {
-            if(!roomService.read(id).guests.isEmpty())
+            if(!roomService.read(id).getGuests().isEmpty())
                 return new ResponseEntity<>("You can't modify room when there are guests",HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(roomService.update(room, id),HttpStatus.OK);
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class RoomController {
     public ResponseEntity<?> delete(@PathVariable(name = "id") int id) {
 
         try {
-            if (!roomService.read(id).guests.isEmpty())
+            if (!roomService.read(id).getGuests().isEmpty())
                 return new ResponseEntity<>("You can't delete room when there are guests", HttpStatus.BAD_REQUEST);
             roomService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);

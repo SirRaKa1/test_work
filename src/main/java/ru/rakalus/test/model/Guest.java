@@ -5,13 +5,15 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "guests")
 public class Guest {
     @Id
     @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "guests_seq")
+    @SequenceGenerator(name = "guests_seq",sequenceName = "guests_seq", allocationSize = 1)
     private Integer id;
 
     @ManyToOne
@@ -37,6 +39,21 @@ public class Guest {
     @Column(name = "edited")
     private Date edited;
 
+    public Guest() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Guest guest = (Guest) o;
+        return Objects.equals(id, guest.id) && Objects.equals(room.getId(), guest.room.getId()) && Objects.equals(surname, guest.surname) && Objects.equals(name, guest.name) && Objects.equals(patronymic, guest.patronymic) && sex == guest.sex && Objects.equals(created, guest.created) && Objects.equals(edited, guest.edited);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, room, surname, name, patronymic, sex, created, edited);
+    }
 
     public Integer getId() {
         return id;
