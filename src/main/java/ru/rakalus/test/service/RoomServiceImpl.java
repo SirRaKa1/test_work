@@ -25,11 +25,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<Room> readAll(Room room, String empty) {
+    public List<Room> readAll(Room room, boolean empty) {
         List<Room> temp;
         if (room != null) temp = repository.findAll(Example.of(room));
         else temp = repository.findAll();
-        if (Objects.equals(empty, "true"))
+        if (empty)
             temp.removeIf(room1 -> room1.getBeds() <= room1.getGuests().size());
         return temp;
     }

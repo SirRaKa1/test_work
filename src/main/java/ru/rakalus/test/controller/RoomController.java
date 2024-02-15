@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.rakalus.test.model.Comfort;
 import ru.rakalus.test.model.Room;
+import ru.rakalus.test.model.Sex;
 import ru.rakalus.test.service.RoomService;
 
 import java.sql.Date;
@@ -23,15 +25,53 @@ public class RoomController {
 
     @PostMapping(value = "/rooms")
     public ResponseEntity<?> create(@RequestBody Room room) {
-        room.setCreated(new Date(Calendar.getInstance().getTime().getTime()));
-        room.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
+        try {
+            room.setCreated(new Date(Calendar.getInstance().getTime().getTime()));
+            room.setEdited(new Date(Calendar.getInstance().getTime().getTime()));
 
-        return new ResponseEntity<>(roomService.create(room),HttpStatus.CREATED);
+            return new ResponseEntity<>(roomService.create(room), HttpStatus.CREATED);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>("Room is invalid",HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/rooms")
-    public ResponseEntity<List<Room>> read(@RequestBody(required = false) Room room,@RequestParam(value = "empty", defaultValue = "false")String empty) {
-        final List<Room> rooms = roomService.readAll(room,empty);
+    public ResponseEntity<?> read(@RequestParam(value = "empty", defaultValue = "false")String empty,@RequestParam(value = "type", required = false)String type,@RequestParam(value = "comfort",required = false)String comfort) {
+        Room room = new Room();
+        if (type!=null)
+        {
+            type = type.trim().toLowerCase();
+            switch (type) {
+                case "male":
+                    room.setType(Sex.male);
+                    break;
+                case "female":
+                    room.setType(Sex.female);
+                    break;
+                default:
+                    return new ResponseEntity<>("Type must be \"male\" or \"female\"", HttpStatus.BAD_REQUEST);
+            }
+        }
+        if (comfort!=null)
+        {
+            comfort = comfort.trim().toLowerCase();
+            switch (comfort){
+                case "standard":
+                    room.setComfort(Comfort.standard);
+                    break;
+                case "high_comfort":
+                    room.setComfort(Comfort.high_comfort);
+                    break;
+                case "luxury":
+                    room.setComfort(Comfort.luxury);
+                    break;
+                default:
+                    return new ResponseEntity<>("Comfort must be \"standard\", \"high_comfort\" or \"luxury\"", HttpStatus.BAD_REQUEST);
+            }
+        }
+        boolean fl = Boolean.parseBoolean(empty);
+        final List<Room> rooms = roomService.readAll(room,fl);
 
         return rooms != null && !rooms.isEmpty()
                 ? new ResponseEntity<>(rooms, HttpStatus.OK)

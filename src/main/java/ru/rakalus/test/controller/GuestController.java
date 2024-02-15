@@ -1,11 +1,14 @@
 package ru.rakalus.test.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.rakalus.test.model.Comfort;
 import ru.rakalus.test.model.Guest;
 import ru.rakalus.test.model.Room;
+import ru.rakalus.test.model.Sex;
 import ru.rakalus.test.service.GuestService;
 import ru.rakalus.test.service.RoomService;
 
@@ -43,18 +46,65 @@ public class GuestController {
             } else
                 return new ResponseEntity<>("Guest must have room id", HttpStatus.BAD_REQUEST);
         }
-        catch (Exception e){
+        catch (RuntimeException e){
+            if (e instanceof DataIntegrityViolationException){
+                return new ResponseEntity<>("Guest is invalid", HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<>("Guest must have valid room id", HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(value = "/guests")
-    public ResponseEntity<List<Guest>> read(@RequestBody(required = false) Guest guest) {
-        final List<Guest> rooms = guestService.readAll(guest);
+    public ResponseEntity<?> read(@RequestParam(name = "sex",required = false)String sex,@RequestParam(name = "room",required = false)String room_id,@RequestParam(name = "comfort",required = false)String comfort) {
+        try {
+            Guest guest = new Guest();
+            Room room = new Room();
+            if (sex != null) {
+                sex = sex.trim().toLowerCase();
+                switch (sex) {
+                    case "male":
+                        guest.setSex(Sex.male);
+                        break;
+                    case "female":
+                        guest.setSex(Sex.female);
+                        break;
+                    case "yes":
+                        return new ResponseEntity<>("Ok... G E N D E R", HttpStatus.BAD_REQUEST);
+                    default:
+                        return new ResponseEntity<>("Sex must be \"male\" or \"female\"", HttpStatus.BAD_REQUEST);
+                }
+            }
+            if (comfort != null) {
+                comfort = comfort.trim().toLowerCase();
+                switch (comfort) {
+                    case "standard":
+                        room.setComfort(Comfort.standard);
+                        break;
+                    case "high_comfort":
+                        room.setComfort(Comfort.high_comfort);
+                        break;
+                    case "luxury":
+                        room.setComfort(Comfort.luxury);
+                        break;
+                    default:
+                        return new ResponseEntity<>("Comfort must be \"standard\", \"high_comfort\" or \"luxury\"", HttpStatus.BAD_REQUEST);
+                }
+            }
 
-        return rooms != null && !rooms.isEmpty()
-                ? new ResponseEntity<>(rooms, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (room_id != null)
+                room.setId(Integer.valueOf(room_id));
+
+            guest.setRoom(room);
+
+            final List<Guest> rooms = guestService.readAll(guest);
+
+            return rooms != null && !rooms.isEmpty()
+                    ? new ResponseEntity<>(rooms, HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e){
+            return new ResponseEntity<>("Room id must be an integer type", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(value = "/guests/{id}")
